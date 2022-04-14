@@ -5,6 +5,7 @@ metadata:
   namespace: kube-system
   labels:
     app: fluentd-logging
+    #time_format "%Y-%m-%dT%H:%M:%S.%NZ"
 data: 
   fluent.conf: |
     <source>
@@ -20,12 +21,13 @@ data:
       @type tail
       @id in_tail_container_logs
       path /var/log/containers/*.log
+      exclude_path ["/var/log/containers/fluentd*"]
       pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       read_from_head true
       <parse>
-        @type json
-        time_format %Y-%m-%dT%H:%M:%S.%NZ
+        @type nginx
+        time_format "%Y-%m-%dT%H:%M:%S.%NZ"
       </parse>
     </source>
     <match fluentd.**>
@@ -50,14 +52,13 @@ data:
         container ${ record.dig("kubernetes", "container_name") }
       </record>
     </filter>
-    
     <match kubernetes.var.log.containers.**>
       @type copy
       <store>
         @type loki
         url "http://loki.monitoring.svc.cluster.local:3100"
         # extra_labels {"env":"dev"}
-        label_keys "app,job,namespace,pod"
+        label_keys "app,job,namespace,pod,container"
         flush_interval 10s
         flush_at_shutdown true
         buffer_chunk_limit 1m
