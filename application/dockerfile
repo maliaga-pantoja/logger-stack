@@ -1,6 +1,6 @@
-FROM python:3.7
-COPY ./ /usr/src/app
-WORKDIR /usr/src/app
-RUN pip install -r requirements.txt
-EXPOSE 3001
-CMD ["python", "app.py"]
+FROM node:17-alpine3.14
+WORKDIR /app
+COPY package.json .
+RUN npm i 
+COPY index.js .
+CMD ["npm", "start"]

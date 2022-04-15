@@ -26,7 +26,7 @@ data:
       tag kubernetes.*
       read_from_head true
       <parse>
-        @type nginx
+        @type json
         time_format "%Y-%m-%dT%H:%M:%S.%NZ"
       </parse>
     </source>

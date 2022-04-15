@@ -8,7 +8,7 @@ spec:
   ports:
   - protocol: "TCP"
     port: 3001
-    targetPort: 3001
+    targetPort: 3000
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: log-simon
-        image: pyapp:v1.0.0
-        imagePullPolicy: Never
+        image: nodeapp:v1.0.1
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3001
+        - containerPort: 3000
